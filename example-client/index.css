@@ -1,0 +1,56 @@
+html {
+    box-sizing: border-box;
+}
+
+*,
+*:before,
+*:after {
+    box-sizing: inherit;
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+    width: 100vw;
+    height: 100vh;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+}
+
+.btn-box {
+    height: 50px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.btn-box>button {
+    width: calc(33.3% - 2px);
+    height: calc(100% - 1px);
+    text-transform: uppercase;
+}
+
+.btn-box>button:hover {
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.editor-box {
+    height: calc(100% - 50px);
+    display: flex;
+    justify-content: space-between
+}
+
+.editor {
+    margin: 2px;
+    width: calc(50% - 4px);
+    height: calc(100% - 8px);
+}
+
+.jsoneditor-poweredBy {
+    display: none;
+}

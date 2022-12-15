@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+
+<!-- https://github.com/josdejong/jsoneditor -->
+<!-- https://cdnjs.com/libraries/jsoneditor -->
+
+<head>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/jsoneditor/9.9.2/jsoneditor.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="index.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsoneditor/9.9.2/jsoneditor.min.js"></script>
+    <script src="back-up.js"></script>
+
+    <script>
+
+        const editors = {};
+        window.onload = () => {
+            const div_input = document.getElementById('editor-input');
+            const editor_input = new JSONEditor(div_input, { mode: 'code' });
+
+            const div_output = document.getElementById('editor-output')
+            const editor_output = new JSONEditor(div_output, { mode: 'code' });
+
+            editors.input = editor_input;
+            editors.output = editor_output;
+
+            // This makes the editor readonly
+            div_output.getElementsByClassName('ace_text-input')[0].readOnly = true;
+        };
+
+        const go = () => {
+
+            let request_data = null;
+            try {
+                // It possible to get the text
+                const txt = editors.input.getText();
+                request_data = editors.input.get();
+            } catch {
+                editors.output.set({
+                    "Result": "unable to make the request",
+                    "Reason": "the input is not a valid JSON",
+                    "Resolution": "please create a valid JSON document"     
+                });
+
+                return;
+            }
+
+            const request = {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(request_data)
+            };
+
+            fetch('http://localhost:8080/post', request)
+                .then((r) => r.json())
+                .then((d) => {
+                    editors.output.set(d);
+                })
+                .catch((ex) => {})
+                .finally(() => {});
+        };
+
+        const reset = () => {
+            editors.input.set({});
+            editors.output.set({});
+        };
+
+        const destroy = () => {
+            editors.input.destroy();
+            editors.output.destroy();
+        };
+
+    </script>
+</head>
+
+<body>
+
+    <div style="display: None">
+        <button onclick="return get_example()">GET example</button>
+        <button onclick="return post_example()">POST example</button>
+    </div>
+
+    <div class="btn-box">
+        <button onclick="return reset()">Reset</button>
+        <button onclick="return go()">GO</button>
+        <button onclick="return destroy()">Destroy</button>
+    </div>
+    <div class="editor-box">
+        <div id="editor-input" class="editor"></div>
+        <div id="editor-output" class="editor"></div>
+    </div>
+
+</body>

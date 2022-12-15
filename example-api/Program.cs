@@ -37,11 +37,22 @@ app.Use(async (ctx, next) =>
 app.UseCors(CORS_CONFIG);
 
 
-app.MapGet("/", async (IOptions<ExampleConfiguration> config) =>
+app.MapGet("/get", async (IOptions<ExampleConfiguration> config) =>
 {
 
     var result = await Task.Run(() => config.Value.Text);
     return $"{result}";
+});
+
+app.MapPost("/post", async (dynamic data) => {
+
+    var result = await Task.Run(() => {
+        var r = new Dictionary<string, object>();
+
+        return data;
+    });
+
+    return result;
 });
 
 app.Run("http://*:8080");
